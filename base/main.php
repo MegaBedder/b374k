@@ -995,11 +995,19 @@ if(!function_exists('is_git_repo')){
 
 if(!function_exists('find_git_repo')){
 	function find_git_repo($path){
+		global $Nesting;
+
+		// "Fatal error: Maximum function nesting level of '256' reached, aborting!"
+		if($Nesting > (256-4)){
+			return false;
+		}
+
 		if(dirname($path) == DIRECTORY_SEPARATOR){
 			return false;
 		}else if(is_dir(dirname($path).DIRECTORY_SEPARATOR.".git")){
 			return dirname($path).DIRECTORY_SEPARATOR.".git";
 		}else{
+			++$Nesting;
 			return find_git_repo(dirname($path));
 		}
 	}
